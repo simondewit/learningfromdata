@@ -4,6 +4,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.metrics import accuracy_score
 import sys
 import sklearn
+from sklearn.metrics import classification_report, confusion_matrix
 
 # COMMENT THIS
 # Read in the corpus file (trainset.txt) line by line, append only the text to the documents list.
@@ -33,18 +34,6 @@ def identity(x):
 
 def printErrorMSG():
     print('Please provide 1 argument: True for sentiment testing and False for category testing',file=sys.stderr)
-
-def customEvaluation(Ytest, Yguess, use_sentiment):
-    #scores per class
-    labels_sentiment = ["pos","neg"]
-    labels_categories = ["books","health","dvd","camera","music","software"]
-    labels = labels_sentiment if use_sentiment else labels_categories
-    print('{:<15}{:<15}{:<15}{:<15}'.format('Class', 'Precision', 'Recall', 'F-score'))
-    for label in labels:
-        precisionScore = sklearn.metrics.precision_score(Ytest,Yguess, average="macro", labels=label)
-        recallScore = sklearn.metrics.recall_score(Ytest,Yguess, average="macro", labels=label)
-        f1Score = sklearn.metrics.f1_score(Ytest,Yguess, average="macro", labels=label)
-        print('{:<15}{:<15}{:<15}{:<15}'.format(label, round(precisionScore,3), round(recallScore,3), round(f1Score,3)))
 
 def main():
     if len(sys.argv) == 2:
@@ -92,8 +81,10 @@ def main():
         # COMMENT THIS
         # Accuracy is printed, predicted labels are compared to the original labels and percentage correct is given
         print(accuracy_score(Ytest, Yguess))
-
-        customEvaluation(Ytest, Yguess, use_sentiment=condition)
+        print(classifier.predict_proba(Xtest))
+        print(classification_report(Ytest, Yguess))
+        print(confusion_matrix(Ytest, Yguess))
+       # customEvaluation(Ytest, Yguess, use_sentiment=condition)
 
     else:
         printErrorMSG() 
